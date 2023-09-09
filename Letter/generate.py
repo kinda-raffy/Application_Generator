@@ -81,7 +81,7 @@ class Generator:
 
     def create_tex_file(self, name: str, content: str) -> None:
         with open(os.path.join(self.config_directory, f"{name}.tex"), "w") as f:
-            f.write(content)
+            f.write(content + "\endinput")
 
     def prepare_configuration_directory(self) -> None:
         shutil.rmtree(self.config_directory, ignore_errors=True)

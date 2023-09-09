@@ -1,4 +1,5 @@
 import os
+import re
 import typing
 import itertools
 
@@ -26,7 +27,31 @@ class LetterParser:
             else:
                 raise ValueError(f"Invalid line: {line}")
             configurations[key.strip().capitalize()] = value.strip()
+        configurations["Content"] = self.format(configurations["Content"])
         return configurations
+
+    def format(self, content: str) -> str:
+        formatted_content = self.format_links(content)
+        formatted_content = self.format_email_addresses(formatted_content)
+        return formatted_content
+
+    def format_links(self, content: str) -> str:
+        # Format Link(Display, URL).
+        link_pattern = r'Link\(([^,]+),\s*([^)]+)\)'
+        return re.sub(
+            link_pattern,
+            r'\\href{\2}{\\textcolor{Purple_200}{\\underline{\1}}}',
+            content
+        )
+
+    def format_email_addresses(self, content: str) -> str:
+        # Emails are automatically detected and formatted.
+        email_pattern = r'(\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b)'
+        return re.sub(
+            email_pattern,
+            r'\\href{mailto:\1}{\\textcolor{Purple_200}{\\underline{\1}}}',
+            content
+        )
 
     def read_single_line(self, line: str) -> typing.Tuple[str, str]:
         return line.split(self.single_line_sep)
