@@ -3,10 +3,12 @@ function register-application() {
     application_name=$(echo "$application_name" | awk '{ for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2)); }1' | tr ' ' '_')
     read "application_location? Application location: "
 
+    generator_folder=$HOME/Career/Applications/Generator
     application_folder=$HOME/Career/Applications/$application_name
     mkdir -p $application_folder
     cd $application_folder
-    echo "Company :- $application_name\nLocation :- $application_location\n\n~-\n\n-~\n" > "${application_name}.letter"
+    echo "Company   :- $application_name\nLocation  :- $application_location\n\n~-\n\\lipsum[1-3]\n-~\n" > "${application_name}.letter"
+    cp -r $generator_folder/application.vscode ./.vscode
 }
 
 function compile-letter() {
