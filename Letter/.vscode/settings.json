@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+      "*.letter": "plaintext"
+    },
+    "[plaintext]": {
+      "editor.wordWrap": "bounded",
+      "editor.wordWrapColumn": 80
+    },
+    "latex-workshop.view.pdf.viewer": "tab",
+    "latex-workshop.latex.recipe.default": "lastUsed",
+    "latex-workshop.latex.outDir": "%DIR%/build"
+  }
