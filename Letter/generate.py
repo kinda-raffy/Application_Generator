@@ -16,6 +16,13 @@ import docopt
 import letter_parser
 
 
+default_configuration = {
+    "Location": "Melbourne, VIC",
+    "Recipient": "Hiring Manager",
+    "Closing": "Warm Regards",
+}
+
+
 class Generator:
     def __init__(
         self,
@@ -24,7 +31,9 @@ class Generator:
         no_pdf_name_stamp: typing.Optional[bool] = False,
         parse_only: typing.Optional[bool] = False
     ) -> None:
-        self.config_directory = os.path.abspath("./config")
+        self.script_directory = os.path.dirname(os.path.abspath(__file__))
+        self.config_directory = os.path.join(self.script_directory, "config")
+        self.build_directory = os.path.join(self.script_directory, "build")
         self.prepare_configuration_directory()
         self.context_file_path = context_file_path
         self.context_file_name = self.retreive_context_file_name()
@@ -34,7 +43,9 @@ class Generator:
 
     def generate(self) -> None:
         parser = letter_parser.LetterParser(self.context_file_path)
-        config = parser.parse()
+        config = default_configuration.copy()
+        parsed_config = parser.parse()
+        config.update(parsed_config)
         self.write_configuration(config)
         if self.parse_only:
             return
@@ -47,21 +58,22 @@ class Generator:
         if not self.no_pdf_name_stamp:
             pdf_name = "Cover_Letter_Rafat_Mahiuddin_" + pdf_name
         shutil.move(
-            os.path.join("build/", f"{self.context_file_name}.pdf"),
+            os.path.join(self.build_directory, f"{self.context_file_name}.pdf"),
             os.path.join(self.output_pdf_path, f"{pdf_name}.pdf")
         )
 
     def generate_pdf(self) -> None:
         os.system(
             'lualatex  -synctex=1 -interaction=nonstopmode ' +
-            '-file-line-error -recorder -output-directory="build" ' +
+            '-file-line-error -recorder ' +
+            f'-output-directory="{os.path.join(self.script_directory, "build")}" ' +
             f'-jobname={self.context_file_name} ' +
-            f'"{os.path.abspath("./Cover_Letter.tex")}"'
+            f'"{os.path.join(self.script_directory, "./Cover_Letter.tex")}"'
         )
 
     def clean_build_directory(self) -> None:
-        shutil.rmtree("build/", ignore_errors=True)
-        os.makedirs("build/")
+        shutil.rmtree(self.build_directory, ignore_errors=True)
+        os.makedirs(self.build_directory)
 
     def write_configuration(self, config: dict[str, str]) -> None:
         for key, value in config.items():
