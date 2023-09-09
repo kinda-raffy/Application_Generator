@@ -2,7 +2,7 @@ function register-application() {
     read "application_name? Application name: "
     application_name=$(echo "$application_name" | awk '{ for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2)); }1' | tr ' ' '_')
 
-    application_folder=~/Career/Applications/$application_name
+    application_folder=$HOME/Career/Applications/$application_name
     mkdir -p $application_folder
     cd $application_folder
     touch "${application_name}.letter"
