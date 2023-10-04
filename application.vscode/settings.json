@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "*.letter": "plaintext"
+    },
+    "[plaintext]": {
+        "editor.wordWrap": "bounded",
+        "editor.wordWrapColumn": 80
+    }
+}
